@@ -1,0 +1,167 @@
+body {
+    background: #3e3f3f;
+    font-size: 16px;
+}
+
+a {
+    text-decoration: none;
+}
+
+/*--- Sidebar Menu ---*/
+.logo img {
+    height: 45px;
+}
+
+.sidebar-menu {
+    background: white;
+}
+
+.sidebar-menu a {
+    color: #3e3f3f;
+    font-size: large;
+    padding: 20px;
+    display: block;  
+}
+
+.sidebar-menu a svg {
+    margin-right: 10px;
+}
+
+.sidebar-menu a:hover {
+    background: #4f49f0;
+    color: white;
+    border-bottom-left-radius: 20px;
+    border-top-left-radius: 20px;
+}
+
+.sidebar-menu .logout {
+    color:#4f49f0;
+}
+
+
+/*--- Main Area ---*/
+
+
+
+/*-Settings Matching Attributes-*/
+main .attributes {
+    border-radius: 15px;
+    border-width: 1px;
+    height: 500px;
+}
+
+main .attributes a {
+    background: #4f49f0;
+}
+
+/*-Camera View-*/
+
+main .camera-view {
+    min-width: 420px;
+}
+
+main .camera-view a img {
+    border-radius: 10px;
+    width: 380px;
+}
+
+/*-Side-*/
+
+main .side-statistics {
+    min-width: 180px;
+    max-width: 200px;
+}
+
+/*-Video Player-*/
+
+.video-player {
+    position: relative;
+  }
+
+  video {
+    width: 100%;
+    max-height: 330px;
+    background:black;
+    margin: 0;
+  }
+
+.controls {
+    background: #5e666f;
+}
+
+.controls button {
+    color: white;
+}
+
+/*-Blacklisted Table-*/
+
+main .blacklisted-table {
+    max-height: 580px;
+    min-width: 1090px;
+}
+
+/*--- Mediaqueries ---*/
+/*-Screen xs-*/
+@media screen and (max-width:320px) {
+
+}
+
+/*-Screen sm-*/
+@media screen and (max-width:576px) {
+    .sidebar-menu {
+        min-height: auto;
+        min-width: auto;
+    }
+
+
+}
+
+/*-Screen md-*/
+@media screen and (max-width:768px) {
+
+}
+
+/*-Screen lg-*/
+@media screen and (max-width:992px) {
+    .logo img {
+        display:none;
+    }
+
+    .sidebar-menu a span {
+        display: none;
+    }
+
+
+}
+
+/*-Screen xl-*/
+@media screen and (max-width:1200px) {
+    .sidebar-menu {
+        min-width: auto;
+    }
+
+    .logo img {
+        height: 45px;
+    }
+
+}
+/*-Screen xxl-*/
+@media screen and (max-width:1400px) {
+
+    main .incident-list {
+        margin-left: 3rem;
+    } 
+
+}
+
+
+.triangle{
+    /* margin-top: 5px; */
+    width: 0;
+    height: 0;
+    /* border-top: 0px solid transparent; */
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    /* border-bottom: 15px solid #93D2B5; increase */
+    /* border-bottom: 15px solid #E75C8D; decrease */
+  }

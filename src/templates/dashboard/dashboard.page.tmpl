@@ -1,0 +1,240 @@
+{{template "base" .}}
+
+{{define "js"}}
+<!-- <script type="module" src="/static/js/hls.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+    var videoSrc1 = 'https://anti-shoplifting-dev.cf/videos/camera1/playlist.m3u8';
+    var videoSrc2 = 'https://anti-shoplifting-dev.cf/videos/camera2/playlist.m3u8';
+    //var videoSrc2 = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+
+    if (Hls.isSupported()) {
+        var video1 = document.getElementById('video1');
+        var hls1 = new Hls({startPosition: 0});
+        hls1.on(Hls.Events.MEDIA_ATTACHED, function () {
+            console.log('video and hls.js are now bound together !');
+            // t = getParam('t');
+            // var currentTime = 0;
+            // if(t) {
+            //     currentTime = parseInt(t, 0);
+            // }
+            // video1.muted = true;
+            // video1.currentTime = currentTime;
+        });
+        hls1.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+            console.log(
+                'manifest loaded, found ' + data.levels.length + ' quality level'
+            );
+        });
+        hls1.loadSource(videoSrc1);
+        // bind them together
+        hls1.attachMedia(video1);
+
+        var video2 = document.getElementById('video2');
+        var hls2 = new Hls({startPosition: 0});
+        hls2.on(Hls.Events.MEDIA_ATTACHED, function () {
+            console.log('video and hls.js are now bound together !');
+            // t = getParam('t');
+            // var currentTime = 0;
+            // if(t) {
+            //     currentTime = parseInt(t, 0);
+            // }
+            // video2.muted = true;
+            // video2.currentTime = currentTime;
+        });
+        hls2.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+            console.log(
+                'manifest loaded, found ' + data.levels.length + ' quality level'
+            );
+        });
+        hls2.loadSource(videoSrc2);
+        // bind them together
+        hls2.attachMedia(video2);
+
+        video1.play();
+        video2.play();
+    }
+
+    function getParam(name, url) {
+         // URLを取得
+         if (!url) url = new URL(window.location.href);
+         // URLSearchParamsオブジェクトを取得
+         var params = url.searchParams;
+         return params.get(name);
+       }
+</script>
+<script>
+    window.onload = function () {
+        async function loop() {
+            while (true) {
+                i = 0;
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        console.log(i);
+                        resolve();
+                    }, 60000);// 60秒ごと
+                });
+                // 処理
+                i++;
+            }
+        }
+        loop();
+    }
+</script>
+{{end}}
+
+{{define "content"}}
+<!--This is the Main Screen content-->
+<main class="main col-9 col-md-10 col-lg-8 col-xxl-10 pt-2">
+    <input type="hidden" name="csrf_token" id="csrf_token" value="{{.CSRFToken}}">
+    <div class="row d-flex justify-content-center">
+
+        <div class="ms- pt-4 pb-2 text-light d-flex">
+            <h2 class="ms-5">Store View</h2>
+            <svg class="ms-3" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
+                class="bi bi-gear-fill" viewBox="0 0 16 16">
+                <path
+                    d="M0 1a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V1zm9 0a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V1zm0 9a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5z" />
+            </svg>
+        </div>
+
+        <div class="col col-md-7 col-lg-8 mb-2">
+
+            <div class="camera-view mt-5 border rounded pb-2">
+
+                <div class="row d-flex justify-content-evenly">
+
+                    <div class="col-auto my-1">
+                        <div class="text-white">カメラ 1
+                        </div>
+                        <!-- <a href="#"><img src="/static/img/Camera (1).jpg" style="height:220px"></a> -->
+                        <video id="video1" controls></video>
+                    </div>
+
+                    <div class="col-auto my-1">
+                        <div class="text-white">カメラ 2
+                        </div>
+                        <!-- <a href="#"><img src="/static/img/Camera (2).jpg" style="height:220px"></a> -->
+                        <video id="video2" controls></video>
+                    </div>
+
+                </div>
+
+                <!-- <div class="row d-flex justify-content-evenly">
+
+                    <div class="col-auto my-1">
+                        <div class="text-white ">カメラ 3
+                        </div>
+                        <a href="#"><img src="/static/img/Camera (3).jpg" style="height:220px"></a>
+                    </div>
+
+                    <div class="col-auto my-1">
+                        <div class="text-white">カメラ 4
+                        </div>
+                        <a href="#"><img src="/static/img/Camera (4).jpg" style="height:220px"></a>
+                    </div>
+
+                </div> -->
+
+            </div>
+        </div>
+
+        <!--This are the side statistics-->
+        <div class="col-8 col-md-3">
+            <div class="side-statistics container mt-5 pt-1 align-content-center text-white">
+
+                <div class="row d-flex rounded mb-3 py-3" style="background: #5e666f;">
+                    <p>Active Sensors</p>
+                    <div class="col">
+                        <p class="fs-5 fw-bold">4</p>
+                    </div>
+
+                    <div class="col">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
+                            class="bi bi-cpu-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M6.5 6a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z" />
+                            <path
+                                d="M5.5.5a.5.5 0 0 0-1 0V2A2.5 2.5 0 0 0 2 4.5H.5a.5.5 0 0 0 0 1H2v1H.5a.5.5 0 0 0 0 1H2v1H.5a.5.5 0 0 0 0 1H2v1H.5a.5.5 0 0 0 0 1H2A2.5 2.5 0 0 0 4.5 14v1.5a.5.5 0 0 0 1 0V14h1v1.5a.5.5 0 0 0 1 0V14h1v1.5a.5.5 0 0 0 1 0V14h1v1.5a.5.5 0 0 0 1 0V14a2.5 2.5 0 0 0 2.5-2.5h1.5a.5.5 0 0 0 0-1H14v-1h1.5a.5.5 0 0 0 0-1H14v-1h1.5a.5.5 0 0 0 0-1H14v-1h1.5a.5.5 0 0 0 0-1H14A2.5 2.5 0 0 0 11.5 2V.5a.5.5 0 0 0-1 0V2h-1V.5a.5.5 0 0 0-1 0V2h-1V.5a.5.5 0 0 0-1 0V2h-1V.5zm1 4.5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5v-3A1.5 1.5 0 0 1 6.5 5z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="row d-flex rounded mb-3 p-2" style="background: #5e666f;">
+                    <p>Weight Change</p>
+                    <!-- <div class="row"> -->
+                        <p style="font-size:12px" id="dashboard-weight-change-sensor-cd">Sensor ID:</p>
+                    <!-- </div> -->
+
+                    <!-- <div class="row"> -->
+                        <div class="col">
+                            <div class="triangle" id="dashboard-weight-change-type"></div>
+                        </div>
+                        <div class="col" id="dashboard-weight-change-value">
+                            ±0&nbsp;kg
+                        </div>
+                    <!-- </div> -->
+                </div>
+
+                <div class="row d-flex rounded mb-3 p-2" style="background: #5e666f;">
+                    <p>Active Cameras</p>
+
+                    <div class="col">
+                        <p class="fs-5 fw-bold">2</p>
+                    </div>
+
+                    <div class="col">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
+                            class="bi bi-webcam-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M6.644 11.094a.5.5 0 0 1 .356-.15h2a.5.5 0 0 1 .356.15c.175.177.39.347.603.496a7.166 7.166 0 0 0 .752.456l.01.006h.003A.5.5 0 0 1 10.5 13h-5a.5.5 0 0 1-.224-.947l.002-.001.01-.006a3.517 3.517 0 0 0 .214-.116 7.5 7.5 0 0 0 .539-.34c.214-.15.428-.319.603-.496ZM7 6.5a1 1 0 1 1 2 0 1 1 0 0 1-2 0Z" />
+                            <path
+                                d="M2 3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H2Zm6 1.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM12.5 7a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1Z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="row d-flex rounded mb-3 p-2" style="background: #5e666f;">
+                    <p>Current Customers</p>
+
+                    <div class="col">
+                        <p class="fs-5 fw-bold">3</p>
+                    </div>
+
+                    <div class="col">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
+                            class="bi bi-basket-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M5.071 1.243a.5.5 0 0 1 .858.514L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 6h1.717L5.07 1.243zM3.5 10.5a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="row d-flex rounded p-2" style="background: #5e666f;">
+                    <p>Alerts</p>
+
+                    <div class="col">
+                        <p class="fs-5 fw-bold">1</p>
+                    </div>
+
+                    <div class="col">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
+                            class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                        </svg>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+</main>
+{{end}}

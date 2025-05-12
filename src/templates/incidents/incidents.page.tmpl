@@ -1,0 +1,582 @@
+{{template "base" .}}
+
+{{define "js"}}
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+    var incidents = JSON.parse("{{.Data.incidents}}");
+    // インシデント数
+    var numberOfIncidents = incidents.length;
+    // 再生中インシデントインデックス
+    var nowPlayingIncidentIndex = 0;
+    // 再生中インシデントのフラグメント動画数
+    var numberOfVideosOfNowPlayingIncident = incidents[nowPlayingIncidentIndex].videos.length;
+    // 再生中フラグメント動画インデックス
+    var nowPlayingVideoIndex = 0;
+    // console.log(numberOfIncidents);
+    // console.log(nowPlayingIncidentIndex);
+    // console.log(numberOfVideosOfNowPlayingIncident);
+    // console.log(nowPlayingVideoIndex);
+
+
+    var tbodyElems = document.getElementById('incident-history-table').getElementsByTagName('tbody')[0];
+    for (var i = 0; i < incidents.length; i++) {
+        // if (i==0) {
+        //     console.log("incidents[0]:", incidents[0]);
+        //     console.log("incident_id:", incidents[0].incident_id)
+        // }
+        // Insert a row at the end of table
+        var row = tbodyElems.insertRow();
+        //console.log(row.rowIndex);
+        var createClickHandler = function (row) {
+            return function () {
+                nowPlayingIncidentIndex = row.rowIndex - 1;
+                //console.log("nowPlayingIncidentIndex:", nowPlayingIncidentIndex);
+                nowPlayingVideoIndex = 0;
+
+                //console.log("row.rowIndex:" + row.rowIndex);
+                //console.log("nowPlayingIncidentIndex:" + nowPlayingIncidentIndex);
+                //console.log("incident_id:" + incidents[nowPlayingIncidentIndex].incident_id);
+
+                // previous-video-button
+                if (nowPlayingIncidentIndex <= 0) {
+                    nowPlayingIncidentIndex = 0;
+                    document.getElementById("previous-video-button").setAttribute("disabled", true);
+                } else {
+                    document.getElementById("previous-video-button").removeAttribute("disabled");
+                }
+
+                // next-video-button
+                if (nowPlayingIncidentIndex < numberOfIncidents - 1) {
+                    document.getElementById("next-video-button").removeAttribute("disabled");
+                } else {
+                    document.getElementById("next-video-button").setAttribute("disabled", true);
+                }
+
+                nowPlayingVideoIndex = 0;
+                numberOfVideosOfNowPlayingIncident = incidents[nowPlayingIncidentIndex].videos.length;
+
+                // previous-chapter-button
+                document.getElementById("previous-chapter-button").setAttribute("disabled", true);
+
+                // next-chapter-button
+                if (nowPlayingVideoIndex < numberOfVideosOfNowPlayingIncident - 1) {
+                    document.getElementById("next-chapter-button").removeAttribute("disabled");
+                } else {
+                    document.getElementById("next-chapter-button").setAttribute("disabled", true);
+                }
+                play();
+            };
+        };
+        row.onclick = createClickHandler(row);
+
+        var newCell = row.insertCell();
+        newCell.innerHTML = incidents[i].row_number;
+
+        var newCell = row.insertCell();
+        newCell.innerHTML = incidents[i].start_datetime;
+
+        var newCell = row.insertCell();
+        newCell.innerHTML = incidents[i].end_datetime;
+
+
+        ////// temporary add for demonstartion //////
+        var newCell = row.insertCell();
+        button = document.createElement("button");
+        button.classList.add("btn", "btn-dark", "btn-sm");
+        button.setAttribute("data-bs-toggle", "modal");
+        button.setAttribute("data-bs-target", "#confirmation-shoplifting-goods");
+        button.setAttribute("value", incidents[i].incident_id);
+        button.onclick = function () {show_shoplifting_goods(this)};
+
+        var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        svg.setAttribute("width", "16");
+        svg.setAttribute("height", "16");
+        svg.classList.add("bi", "bi-basket-fill");
+        svg.setAttribute("fill", "currentColor");
+        svg.setAttribute('viewBox', "0 0 16 16");
+
+        var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", "M5.071 1.243a.5.5 0 0 1 .858.514L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 6h1.717L5.07 1.243zM3.5 10.5a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3z");
+
+        svg.appendChild(path);
+        button.appendChild(svg);
+        newCell.appendChild(button);
+        //////
+
+
+
+
+
+        var newCell = row.insertCell();
+        button = document.createElement("button");
+        button.classList.add("btn", "btn-dark", "btn-sm");
+        button.setAttribute("data-bs-toggle", "modal");
+        button.setAttribute("data-bs-target", "#confirmation-delete-item");
+
+        var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        svg.setAttribute("width", "16");
+        svg.setAttribute("height", "16");
+        svg.classList.add("bi", "bi-trash-fill");
+        svg.setAttribute("fill", "currentColor");
+        svg.setAttribute('viewBox', "0 0 16 16");
+
+        var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", "M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z");
+
+        svg.appendChild(path);
+        button.appendChild(svg);
+        newCell.appendChild(button);
+    }
+
+    function playPreviousVideo() {
+        nowPlayingIncidentIndex -= 1;
+
+        // previous-video-button
+        if (nowPlayingIncidentIndex <= 0) {
+            nowPlayingIncidentIndex = 0;
+            document.getElementById("previous-video-button").setAttribute("disabled", true);
+        }
+        // next-video-button
+        if (nowPlayingIncidentIndex < numberOfIncidents - 1) {
+            document.getElementById("next-video-button").removeAttribute("disabled");
+        }
+
+        nowPlayingVideoIndex = 0;
+        numberOfVideosOfNowPlayingIncident = incidents[nowPlayingIncidentIndex].videos.length;
+
+        // previous-chapter-button
+        document.getElementById("previous-chapter-button").setAttribute("disabled", true);
+
+        // next-chapter-button
+        if (nowPlayingVideoIndex < numberOfVideosOfNowPlayingIncident - 1) {
+            document.getElementById("next-chapter-button").removeAttribute("disabled");
+        } else {
+            document.getElementById("next-chapter-button").setAttribute("disabled", true);
+        }
+
+        // play
+        play();
+    }
+
+    function playNextVideo() {
+        nowPlayingIncidentIndex += 1;
+
+        // next-video-button
+        if (nowPlayingIncidentIndex >= numberOfIncidents - 1) {
+            nowPlayingIncidentIndex = numberOfIncidents - 1;
+            document.getElementById("next-video-button").setAttribute("disabled", true);
+        }
+        // previous-video-button
+        if (nowPlayingIncidentIndex > 0) {
+            document.getElementById("previous-video-button").removeAttribute("disabled");
+        }
+
+        nowPlayingVideoIndex = 0;
+        numberOfVideosOfNowPlayingIncident = incidents[nowPlayingIncidentIndex].videos.length;
+
+        // previous-chapter-button
+        document.getElementById("previous-chapter-button").setAttribute("disabled", true);
+
+        // next-chapter-button
+        if (nowPlayingVideoIndex < numberOfVideosOfNowPlayingIncident - 1) {
+            document.getElementById("next-chapter-button").removeAttribute("disabled");
+        } else {
+            document.getElementById("next-chapter-button").setAttribute("disabled", true);
+        }
+
+        play();
+    }
+
+
+    function playPreviousChapter() {
+        nowPlayingVideoIndex -= 1;
+        // previous-chapter-button
+        if (nowPlayingVideoIndex <= 0) {
+            nowPlayingVideoIndex = 0;
+            document.getElementById("previous-chapter-button").setAttribute("disabled", true);
+        }
+        // next-chapter-button
+        if (nowPlayingVideoIndex < numberOfVideosOfNowPlayingIncident - 1) {
+            document.getElementById("next-chapter-button").removeAttribute("disabled");
+        }
+        play();
+    }
+
+    function playNextChapter() {
+        nowPlayingVideoIndex += 1;
+        // next-chapter-button
+        if (nowPlayingVideoIndex >= numberOfVideosOfNowPlayingIncident - 1) {
+            nowPlayingVideoIndex = numberOfVideosOfNowPlayingIncident - 1;
+            document.getElementById("next-chapter-button").setAttribute("disabled", true);
+        }
+        // previous-chapter-button
+        if (nowPlayingVideoIndex > 0) {
+            document.getElementById("previous-chapter-button").removeAttribute("disabled");
+        }
+
+        play();
+    }
+
+    function replay() {
+        play();
+    }
+
+    function play() {
+        //console.log("incident_id:", incidents[nowPlayingIncidentIndex].incident_id);
+        var label_video_title = document.getElementById("blacklist-video-footage-label");
+        label_video_title.innerHTML = "";
+        label_video_title.insertAdjacentHTML("afterbegin",
+            "Incident " + String(nowPlayingIncidentIndex + 1).padStart(4, '0') +
+            `<span class="text-muted">&nbsp;&nbsp;` +
+            incidents[nowPlayingIncidentIndex].start_datetime +
+            `</span>`);
+
+        var label_chapter = document.getElementById("chapter-label");
+        label_chapter.innerHTML = "Chapter" + String(nowPlayingVideoIndex + 1) + "/" + String(numberOfVideosOfNowPlayingIncident);
+
+        var videoSrc = incidents[nowPlayingIncidentIndex].videos[nowPlayingVideoIndex].url;
+
+        if (Hls.isSupported()) {
+            var video = document.getElementById('video');
+            var hls = new Hls();
+            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+                //console.log('video and hls.js are now bound together !');
+            });
+            hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                //console.log('manifest loaded, found ' + data.levels.length + ' quality level');
+            });
+            hls.loadSource(videoSrc);
+            // bind them together
+            hls.attachMedia(video);
+            video.play();
+        }
+    }
+
+    function addBlacklist() {
+        var csrf_token = document.getElementById("csrf_token").value;
+        var blacklist_name = document.getElementById("blacklist_name").value;
+        if (!blacklist_name) {
+            alert("Make sure to input blacklist name");
+            return false;
+        }
+
+        // console.log(csrf_token);
+        // form を動的に生成
+        var form = document.createElement('form');
+        let formData = new FormData(form);
+        // {{.CSRFToken}} not work, but  csrf_token worked!
+        //formData.append("csrf_token", "{{.CSRFToken}}");
+        formData.append("csrf_token", csrf_token);
+        formData.append("name", blacklist_name);
+        formData.append("incident_id", incidents[nowPlayingIncidentIndex].incident_id);
+
+        fetch('/blacklists/register', {
+            method: "post",
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                console.log(data.result);
+                console.log(data.message);
+                alert(data.result);
+                alert(data.message);
+            })
+    }
+
+    // 差分
+    function show_shoplifting_goods(objButton) {
+        incident_id = objButton.value;
+        console.log("incident_id:", incident_id);
+        var csrf_token = document.getElementById("csrf_token").value;
+
+        // form を動的に生成
+        var form = document.createElement('form');
+        let formData = new FormData(form);
+        formData.append("csrf_token", csrf_token);
+        formData.append("incident_id", incident_id);
+
+        fetch('/incidents/sales_items', {
+            method: "post",
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                var tbodyElems = document.getElementById('confirmation-shoplifting-goods').getElementsByTagName('tbody')[0];
+                // 一度全部空にする(差分)
+                tbodyElems.innerHTML = ""
+                // 要素追加
+                for (var i = 0; i < data.length; i++) {
+                    // Insert a row at the end of table
+                    // #
+                    var row = tbodyElems.insertRow();
+                    var newCell = row.insertCell();
+                    newCell.classList.add("align-middle");
+                    newCell.innerHTML = i+1;
+
+                    // image
+                    var newCell = row.insertCell();
+                    newCell.classList.add("align-middle");
+                    ////newCell.innerHTML = "";
+                    var img = document.createElement('img');
+                    img.src = data[i].url;
+                    img.width = "100";
+                    img.height = "100";
+                    newCell.appendChild(img);
+
+                    //count
+                    var newCell = row.insertCell();
+                    newCell.classList.add("align-middle");
+                    //// newCell.innerHTML = "";
+                    var div = document.createElement('div');
+                    div.classList.add("text-center");
+                    div.innerHTML = data[i].count;
+                    newCell.appendChild(div);
+                }
+            })
+    }
+
+    // page読み込み時に実行したい処理
+    window.onload = function () {
+        // previous-video-button
+        if (nowPlayingIncidentIndex == 0) {
+            document.getElementById("previous-video-button").setAttribute("disabled", true);
+        } else {
+            document.getElementById("previous-video-button").removeAttribute("disabled");
+        }
+
+        // next-video-button
+        if (nowPlayingIncidentIndex == numberOfIncidents - 1) {
+            document.getElementById("next-video-button").setAttribute("disabled", true);
+        } else {
+            document.getElementById("next-video-button").removeAttribute("disabled");
+        }
+
+
+        // previous-chapter-button
+        if (nowPlayingVideoIndex == 0) {
+            document.getElementById("previous-chapter-button").setAttribute("disabled", true);
+        } else {
+            document.getElementById("previous-chapter-button").removeAttribute("disabled");
+        }
+
+        // next-chapter-button
+        if (nowPlayingVideoIndex == numberOfVideosOfNowPlayingIncident - 1) {
+            document.getElementById("next-chapter-button").setAttribute("disabled", true);
+        } else {
+            document.getElementById("next-chapter-button").removeAttribute("disabled");
+        }
+
+        // play default video
+        play();
+    }
+</script>
+
+{{end}}
+
+{{define "content"}}
+<!--This is the Main Screen content-->
+<main class="main col-9 col-md-10 col-lg-8 col-xxl-10 pt-2">
+    <input type="hidden" name="csrf_token" id="csrf_token" value="{{.CSRFToken}}">
+    <!-- {{$incidents := index .Data "incidents"}} -->
+    <div class="row">
+        <div class="pt-4 pb-2 text-light d-flex">
+            <h2 class="ms-5">事件記録</h2>
+            <svg class="ms-3" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
+                class="bi bi-person-bounding-box" viewBox="0 0 16 16">
+                <path
+                    d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z" />
+                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+            </svg>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!--This is where the video goes-->
+        <div class="col-12 col-xxl-7">
+            <div class="ms-5 mt-5 border rounded p-1" style="min-height: 445px; min-width: 400px;">
+                <div id="blacklist-video-footage-label" class="text-white h5 px-2 py-2">
+                    <!-- Incident 0001
+                    <span class="text-muted">
+                        2022/05/16 15:43
+                    </span> -->
+                </div>
+
+                <div class="row text-center">
+
+                    <div class="video-player">
+                        <!-- <video id="video">
+                            <source src="/static/img/Table Video Ver2.mov" type="video/mp4" />
+                        </video> -->
+                        <video id="video" controls muted></video>
+                    </div>
+                </div>
+
+                <div class="controls d-flex rounded" style="height:50px">
+
+                    <button id="replay-button" class="btn btn-sm" onclick="replay()" ;>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
+                            <path
+                                d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />
+                        </svg>
+                    </button>
+
+                    <button id="previous-video-button" class="btn btn-sm" onclick="playPreviousVideo();">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-skip-start-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M4 4a.5.5 0 0 1 1 0v3.248l6.267-3.636c.54-.313 1.232.066 1.232.696v7.384c0 .63-.692 1.01-1.232.697L5 8.753V12a.5.5 0 0 1-1 0V4z" />
+                        </svg>
+                    </button>
+
+                    <button id="previous-chapter-button" class="btn btn-sm" onclick="playPreviousChapter();">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-skip-backward-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M.5 3.5A.5.5 0 0 0 0 4v8a.5.5 0 0 0 1 0V8.753l6.267 3.636c.54.313 1.233-.066 1.233-.697v-2.94l6.267 3.636c.54.314 1.233-.065 1.233-.696V4.308c0-.63-.693-1.01-1.233-.696L8.5 7.248v-2.94c0-.63-.692-1.01-1.233-.696L1 7.248V4a.5.5 0 0 0-.5-.5z" />
+                        </svg>
+                    </button>
+
+                    <span id="chapter-label" class="row m-3 text-white align-middle" style="min-width: 100px;">Chapter
+                        1/5</span>
+
+                    <button id="next-chapter-button" class="btn btn-sm" onclick="playNextChapter();">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-skip-forward-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M15.5 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V8.753l-6.267 3.636c-.54.313-1.233-.066-1.233-.697v-2.94l-6.267 3.636C.693 12.703 0 12.324 0 11.693V4.308c0-.63.693-1.01 1.233-.696L7.5 7.248v-2.94c0-.63.693-1.01 1.233-.696L15 7.248V4a.5.5 0 0 1 .5-.5z" />
+                        </svg>
+                    </button>
+
+                    <button id="next-video-button" class="btn btn-sm ms-1" onclick="playNextVideo()" ;>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            class="bi bi-skip-end-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M12.5 4a.5.5 0 0 0-1 0v3.248L5.233 3.612C4.693 3.3 4 3.678 4 4.308v7.384c0 .63.692 1.01 1.233.697L11.5 8.753V12a.5.5 0 0 0 1 0V4z" />
+                        </svg>
+                    </button>
+
+                    <button class="btn btn-sm btn-block text-capitalize rounded" data-bs-toggle="modal"
+                        data-bs-target="#confirmation-add-blacklist">
+                        Add to Blacklist
+                    </button>
+                </div>
+
+            </div>
+
+
+        </div>
+        <!--This is where the list goes-->
+        <div class="col-12 col-xxl-5">
+
+            <div class="incident-list overflow-auto mt-5 border rounded py-2 me-2"
+                style="max-height:445px; max-width: 880px;">
+
+                <table id="incident-history-table"
+                    class="table table-striped table-dark table-hover table-borderless table-sm text-center align-middle my-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Start Datetime</th>
+                            <th scope="col">End Datetime</th>
+                            <th scope="col"></th><!-- temporary add -->
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        <!-- display records dynamically via javascript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    </div>
+    </div>
+
+    <!--This is the modal to add to blacklist-->
+    <!-- <form action="/incidents/register/blacklist" method="post" novalidate class="needs-validation">
+        <input type="hidden" name="csrf_token" value="{{.CSRFToken}}"> -->
+    <div class="modal fade" id="confirmation-add-blacklist" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Incident to Blacklist</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-outline mb-4">
+                        <input type="text" id="blacklist_name" class="form-control form-control-lg" />
+                        <label class="form-label" for="blacklist_name">Blacklist name</label>
+                    </div>
+                    <p class="fs-6">Are you sure you want to add the following incident to the blacklist?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <!-- <a href="#"> -->
+                    <button type="button" class="btn text-white" style="background-color:#4f49f0"
+                        onclick="addBlacklist();">Add</button>
+                    <!-- </a> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- </form> -->
+
+    <!--This is the modal to delete list item-->
+    <div class="modal fade" id="confirmation-delete-item" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Incident</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="fs-6">Are you sure you want to delete incident from the list?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <a href="#"><button type="button" class="btn text-white"
+                            style="background-color:#4f49f0">Delete</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--This is the modal to delete list item-->
+    <div class="modal fade" id="confirmation-shoplifting-goods" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Items damaged by shoplifting</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead id="incident-salesitems-table">
+                            <tr>
+                                <th>#</th>
+                                <th><div class="text-center">Image</div></th>
+                                <th><div class="text-center">Number of Damage</div></th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                            <!-- display records dynamically via javascript -->
+                        </tbody>
+                    </table>
+                    <!-- <p class="fs-6">Are you sure you want to delete incident from the list?</p> -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+{{end}}

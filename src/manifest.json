@@ -1,0 +1,13 @@
+{
+    "name": "ServiceWorker Push",
+    "short_name": "ServiceWorker Push",
+    "icons": [{
+      "src": "/static/img/Blue_Logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }],
+    "start_url": "/",
+    "display": "standalone",
+    "gcm_sender_id": "916044113120",
+    "gcm_user_visible_only": true
+  }

@@ -1,0 +1,75 @@
+body {
+    background: #3f3f3f;
+}
+
+#side_nav {
+    background: white;
+    min-width: 250px;
+    max-width: 250px;
+}
+
+.header-box {
+    align-items: center;
+    vertical-align: middle;
+    padding-top: 5px;
+    padding-left: 5px;
+}
+
+#side_nav .sidebar-items {
+    padding-top: 40px;
+}
+
+#side_nav .sidebar-items li {
+    height: 80px;
+}
+
+#side_nav .sidebar-items li a {
+    color: #3f3f3f;
+    font-weight:bold;
+}
+
+.material-icons {
+    vertical-align: middle;
+    padding-right: 10px;
+    color: #3f3f3f;
+    font-size: 30pt;
+}
+
+#side_nav .sidebar-items li :hover {
+    background-color: rgb(230, 230, 230);
+    border-radius: 10px;
+}
+
+#side_nav .sidebar-items li :active {
+    background-color:#3f3f3f;
+    border-radius: 10px;
+    color: white;
+}
+
+#side_nav .logout {
+   position: absolute;
+   bottom: 0px;
+}
+
+#side_nav .logout li {
+    padding-left: 30px;
+}
+
+.company-logo {
+    padding-right: 10px;
+}
+
+#side_nav .logout li a {
+    color: rgb(46, 46, 240);
+    font-size: 10pt;
+}
+
+.content {
+    min-height: 100vh;
+    width: 100%;
+}
+
+.card :hover {
+    border-color: #4f49f0;
+    border-radius: 5px;
+}

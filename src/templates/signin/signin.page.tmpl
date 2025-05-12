@@ -1,0 +1,82 @@
+{{template "base" .}}
+
+{{define "js"}}
+<!-- <script type="module" src="/static/js/toastifier.js"></script> -->
+<!-- <script type="module" src="/static/js/firebase-initialize.js"></script> -->
+{{end}}
+
+{{define "content"}}
+<div class="container d-flex align-items-center justify-content-center vh-100">
+    {{$res := index .Data "signin"}}
+
+    <form action="/signin" method="post" novalidate class="col-8 col-md-6 col-lg-5 col-xl-4 needs-validation">
+        <input type="hidden" name="csrf_token" id="csrf_token" value="{{.CSRFToken}}">
+
+        <div class="text-center loginbox">
+
+            <div class="box rounded justify-items-center" style="background-color: #fff;">
+
+                <img class="mb-4 mt-3" src="/static/img/Anti_Shoplifting_Dev_logo.png" height="60px">
+
+                <div class="p-4 form">
+                    <div class="form-outline mb-4">
+                        <!-- <input type="text" id="company_code" name="company_code" class="form-control form-control-lg" /> -->
+                        <input class="form-control form-control-lg {{with .Form.Errors.Get "company_code"}} is-invalid {{end}}"
+                        id="company_code" name="company_code" autocomplete="off" type="text" value="{{$res.CompanyCd}}" required>
+                        <label class="form-label" for="company_code">Company Code</label>
+                        {{with .Form.Errors.Get "company_code"}}
+                        <label class="text-danger">{{.}}</label>
+                        {{end}}
+                    </div>
+
+                    <div class="form-outline mb-4">
+                        <!-- <input type="text" id="store_code" name="store_code" class="form-control form-control-lg" /> -->
+                        <input class="form-control form-control-lg {{with .Form.Errors.Get "store_code"}} is-invalid {{end}}"
+                        id="store_code" name="store_code" autocomplete="off" type="text" value="{{$res.StoreCd}}" required>
+                        <label class="form-label" for="store_code">Store Code</label>
+                        {{with .Form.Errors.Get "store_code"}}
+                        <label class="text-danger">{{.}}</label>
+                        {{end}}
+                    </div>
+
+                    <div class="form-outline mb-4">
+                        <!-- <input type="password" id="password" name="password" class="form-control form-control-lg" /> -->
+                        <input class="form-control form-control-lg {{with .Form.Errors.Get "password"}} is-invalid {{end}}"
+                        id="password" name="password" autocomplete="off" type="password" value="{{$res.Password}}" required>
+                        <label class="form-label" for="password">Password</label>
+                        {{with .Form.Errors.Get "password"}}
+                        <label class="text-danger">{{.}}</label>
+                        {{end}}
+                    </div>
+                </div>
+
+                <div class="checkbox mb-3">
+                    <label>
+                        <!-- <input class="me-2" type="checkbox" id="remember_me" name="remember_me" value="1">Remember me? -->
+                        <input class="me-2 {{with .Form.Errors.Get "remember_me"}} is-invalid {{end}}"
+                        id="remember_me" name="remember_me" autocomplete="off" type="checkbox" value="1" {{ if $res.RememberMe }} checked {{ end }}>Remember me?
+                        {{with .Form.Errors.Get "remember_me"}}
+                        <label class="text-danger">{{.}}</label>
+                        {{end}}
+                    </label>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <input type="submit" class="btn btn-lg mb-2 w-50 text-white rounded" style="background-color:#4f49f0" value="Login">
+                    <!-- <a href="/signup" class="btn btn-lg mb-2 w-50 text-white rounded" type="button" style="background-color:#4f49f0;">Login</a> -->
+                </div>
+
+                <a href="/signup/store/reset-password">
+                    <p class="pb-3" style="color:#4f49f0">Forgot password?</p>
+                </a>
+
+                <hr class="w-75 mx-auto">
+
+                <p class="pb-3">Don't have an account? <a href="/signup"><span style="color:#4f49f0;">Sign up</span></p>
+                </a>
+
+            </div>
+        </div>
+    </form>
+</div>
+{{end}}

@@ -1,0 +1,240 @@
+{{template "base" .}}
+
+{{define "content"}}
+<div class="container">
+  {{$res := index .Data "confirm"}}
+
+  <form action="/signup/company/confirm" method="post" novalidate class="needs-validation">
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+
+    <div class="row align-items-center justify-content-evenly vh-100">
+      <div class="col-12 col-md-10 col-lg-8 p-5">
+        <div class="bg-white rounded">
+
+          <div class="m-4 pb-2">
+            <div class="h3 p-4 text-center">Information Confirmation
+            </div>
+
+            <div class="container ps-0 ms-0">
+
+              <table class="table table-sm table-borderless">
+                <thead class="table-light col-12">
+                  <th colspan="2"><span class="h5">Company Information</span></th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="col-6">会社名</td>
+                    <td><span class="fw-bold col-6">{{$res.CompanyName}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>代表者姓</td>
+                    <td><span class="fw-bold">{{$res.RepresentativeFamilyName}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>代表者名</td>
+                    <td><span class="fw-bold">{{$res.RepresentativeFirstName}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>代表者姓カナ</td>
+                    <td><span class="fw-bold">{{$res.RepresentativeFamilyNameKana}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>代表者名カナ</td>
+                    <td><span class="fw-bold">{{$res.RepresentativeFirstNameKana}}</span></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="row justify-content-end pb-5 pe-4">
+                <div class="col-1">
+                  <a href="/signup/company" type="button" class="btn btn-sm text-white"
+                    style="background-color:#4f49f0">Edit</a>
+                </div>
+              </div>
+
+              <table class="table table-sm table-borderless">
+                <thead class="table-light">
+                  <th colspan="2"><span class="h5">Address</span></th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="col-6">郵便番号</td>
+                    <td><span class="fw-bold col-6">{{$res.Zipcode}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>都道府県</td>
+                    <td><span class="fw-bold">{{$res.Prefecture}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>市区町村</td>
+                    <td><span class="fw-bold">{{$res.City}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>番地</td>
+                    <td><span class="fw-bold">{{$res.Street}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>建物名</td>
+                    <td><span class="fw-bold">{{$res.Building}}</span></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="row justify-content-end pb-5 pe-4">
+                <div class="col-1">
+                  <a href="/signup/company" type="button" class="btn btn-sm text-white"
+                    style="background-color:#4f49f0">Edit</a>
+                </div>
+              </div>
+
+              <table class="table table-sm table-borderless">
+                <thead class="table-light">
+                  <th colspan="2"><span class="h5">Company Contact Information</span></th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="col-6">電話番号</td>
+                    <td><span class="fw-bold col-6">{{$res.Tel}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>メールアドレス</td>
+                    <td><span class="fw-bold">{{$res.Mail}}</span></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="row justify-content-end pb-5 pe-4">
+                <div class="col-1">
+                  <a href="/signup/company" type="button" class="btn btn-sm text-white"
+                    style="background-color:#4f49f0">Edit</a>
+                </div>
+              </div>
+
+              <table class="table table-sm table-borderless">
+                <thead class="table-light">
+                  <th colspan="2"><span class="h5">Store Manager Information</span></th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="col-6">担当責任者姓</td>
+                    <td><span class="fw-bold">{{$res.ManagerFamilyName}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>担当責任者名</td>
+                    <td><span class="fw-bold">{{$res.ManagerFirstName}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>担当責任者姓カナ</td>
+                    <td><span class="fw-bold">{{$res.ManagerFamilyNameKana}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>担当責任者名カナ</td>
+                    <td><span class="fw-bold">{{$res.ManagerFirstNameKana}}</span></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="row justify-content-end pb-5 pe-4">
+                <div class="col-1">
+                  <a href="/signup/company/basicinfo/contd" type="button"
+                    class="btn btn-sm text-white" style="background-color:#4f49f0">Edit</a>
+                </div>
+              </div>
+
+              <table class="table table-sm table-borderless">
+                <thead class="table-light">
+                  <th colspan="2"><span class="h5">Store Manager Contact Information</span></th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="col-6" style="min-width: 130px;">担当責任者電話番号</td>
+                    <td style="min-width: 120px; "><span class="fw-bold">{{$res.ManagerTel}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>担当責任者メールアドレス</td>
+                    <td><span class="fw-bold">{{$res.ManagerMail}}</span></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="row justify-content-end pb-5 pe-4">
+                <div class="col-1">
+                  <a href="/signup/company/basicinfo/contd" type="button"
+                    class="btn btn-sm text-white" style="background-color:#4f49f0">Edit</a>
+                </div>
+              </div>
+
+              <table class="table table-sm table-borderless">
+                <thead class="table-light">
+                  <th colspan="2"><span class="h5">Payment Method</span></th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="col-6" style="min-width: 130px;">カード番号</td>
+                    <td><span class="fw-bold">{{$res.CardNo}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>カード名義人姓カナ</td>
+                    <td><span class="fw-bold">{{$res.CardHolderFamilyNameKana}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>カード名義人名カナ</td>
+                    <td><span class="fw-bold">{{$res.CardHolderFirstNameKana}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>カード有効期限月</td>
+                    <td><span class="fw-bold">{{$res.CardMonth}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>カード有効期限年</td>
+                    <td><span class="fw-bold">{{$res.CardYear}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>セキュリティコード</td>
+                    <td><span class="fw-bold">{{$res.SecurityCd}}</span></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="row justify-content-end pb-5 pe-4">
+                <div class="col-1">
+                  <a href="/signup/company/payment" type="button" class="btn btn-sm text-white"
+                    style="background-color:#4f49f0">Edit</a>
+                </div>
+              </div>
+            </div>
+            <div class="row justify-content-end pb-3 pe-3">
+              <div class="col-4 col-md-3 col-xl-2">
+                <a href="/signup/company/payment" type="button" class="btn btn-block btn-light">戻る</a>
+              </div>
+
+              <div class="col-4 col-md-3 col-xl-2">
+                <a href="/signup/company/confirm" type="submit"
+                  class="btn btn-block text-white" style="background-color:#4f49f0" data-bs-toggle="modal"
+                  data-bs-target="#confirmation-info-window">Submit</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="confirmation-info-window" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirm Company Information</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p class="fs-6">Are you sure you want to confirm and submit?</p>
+            <p class="text-dark text-opacity-50">A verification email with a URL and Company Key will be sent to the
+              provided email address.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            <a href="/signup/company/confirm"><button type="submit" class="btn text-white"
+                style="background-color:#4f49f0">Submit</button></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{{end}}

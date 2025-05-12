@@ -1,0 +1,117 @@
+{{template "base" .}}
+
+{{define "content"}}
+<div class="container">
+  {{$res := index .Data "basicinfocontd"}}
+
+  <form action="/signup/company/basicinfo/contd" method="post" novalidate class="needs-validation">
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+
+
+    <div class="row align-items-center justify-content-evenly vh-100">
+      <div class="col-8 p-5">
+        <div class="bg-white rounded">
+
+          <div class="m-4 pb-2">
+            <div class="h3 p-4 text-center">New Company Registration
+            </div>
+
+            <div class="h5 pb-2 text-start">Store Manager Information
+            </div>
+
+            <div class="row">
+              <div class="col-6">
+                <div class="form-outline mb-4">
+                  <input class="form-control form-control-lg {{with .Form.Errors.Get " manager_family_name"}} is-invalid
+                    {{end}}" id="manager_family_name" name="manager_family_name" autocomplete="off" type="text"
+                    value="{{$res.ManagerFamilyName}}" required>
+                  <label class="form-label" for="manager_family_name">担当責任者姓</label>
+                  {{with .Form.Errors.Get "manager_family_name"}}
+                  <label class="text-danger">{{.}}</label>
+                  {{end}}
+                </div>
+              </div>
+
+              <div class="col-6">
+                <div class="form-outline mb-4">
+                  <input class="form-control form-control-lg {{with .Form.Errors.Get " manager_first_name"}} is-invalid
+                    {{end}}" id="manager_first_name" name="manager_first_name" autocomplete="off" type="text"
+                    value="{{$res.ManagerFirstName}}" required>
+                  <label class="form-label" for="manager_first_name">担当責任者名</label>
+                  {{with .Form.Errors.Get "manager_first_name"}}
+                  <label class="text-danger">{{.}}</label>
+                  {{end}}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6">
+                <div class="form-outline mb-4">
+                  <input class="form-control form-control-lg {{with .Form.Errors.Get " manager_family_name_kana"}}
+                    is-invalid {{end}}" id="manager_family_name_kana" name="manager_family_name_kana" autocomplete="off"
+                    type="text" value="{{$res.ManagerFamilyNameKana}}" required>
+                  <label class="form-label" for="manager_family_name_kana">担当責任者姓カナ</label>
+                  {{with .Form.Errors.Get "manager_family_name_kana"}}
+                  <label class="text-danger">{{.}}</label>
+                  {{end}}
+                </div>
+              </div>
+
+              <div class="col-6">
+                <div class="form-outline mb-4">
+                  <input class="form-control form-control-lg {{with .Form.Errors.Get " manager_first_name_kana"}}
+                    is-invalid {{end}}" id="manager_first_name_kana" name="manager_first_name_kana" autocomplete="off"
+                    type="text" value="{{$res.ManagerFirstNameKana}}" required>
+                  <label class="form-label" for="manager_first_name_kana">担当責任者名カナ</label>
+                  {{with .Form.Errors.Get "manager_first_name_kana"}}
+                  <label class="text-danger">{{.}}</label>
+                  {{end}}
+                </div>
+              </div>
+            </div>
+
+            <div class="h5 pb-2 text-start">Store Manager Contact Information
+            </div>
+
+            <div class="form-outline mb-4">
+              <input class="form-control form-control-lg {{with .Form.Errors.Get " manager_tel"}} is-invalid {{end}}"
+                id="manager_tel" name="manager_tel" autocomplete="off" type="text" value="{{$res.ManagerTel}}" required>
+              <label class="form-label" for="manager_tel">担当責任者電話番号</label>
+              {{with .Form.Errors.Get "manager_tel"}}
+              <label class="text-danger">{{.}}</label>
+              {{end}}
+            </div>
+
+            <div class="form-outline mb-4">
+              <input class="form-control form-control-lg {{with .Form.Errors.Get " manager_mail"}} is-invalid {{end}}"
+                id="manager_mail" name="manager_mail" autocomplete="off" type='email' value="{{$res.ManagerMail}}"
+                required>
+              <label class="form-label" for="manager_mail">担当責任者メールアドレス</label>
+              {{with .Form.Errors.Get "manager_mail"}}
+              <label class="text-danger">{{.}}</label>
+              {{end}}
+            </div>
+
+          </div>
+
+          <div class="row justify-content-end pb-3 pe-3">
+
+            <div class="col-2">
+              <a href="/signin/company/basicinfo" type="button" class="btn btn-block btn-light">戻る</a>
+            </div>
+
+            <div class="col-2">
+              <input type="submit" class="btn btn-block text-white" style="background-color:#4f49f0" value="次へ">
+              <!-- <a href="/signup/company/basicinfo/contd" type="submit" class="btn btn-block text-white"
+                style="background-color:#4f49f0">次へ</a> -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </form>
+</div>
+{{end}}

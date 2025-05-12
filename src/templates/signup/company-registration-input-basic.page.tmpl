@@ -1,0 +1,234 @@
+{{template "base" .}}
+
+{{define "js"}}
+<script src="https://cdn.jsdelivr.net/npm/fetch-jsonp@1.1.3/build/fetch-jsonp.min.js"></script>
+<script src="/static/js/get_address.js"></script>
+{{end}}
+
+{{define "content"}}
+<div class="container">
+  {{$res := index .Data "basicinfo"}}
+  {{$prefectures := index .Data "prefectures"}}
+
+  <form action="/signup/company/basicinfo" method="post" class="row align-items-center justify-content-evenly vh-100"
+    novalidate>
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+    <div class="col-8 p-5">
+      <div class="bg-white rounded">
+
+        <div class="m-4 pb-2">
+          <div class="h3 p-4 text-center">New Company Registration
+          </div>
+
+          <div class="h5 pb-2 text-start">Company Information
+          </div>
+
+          <div class="form-outline mb-4">
+            <input class="form-control form-control-lg {{with .Form.Errors.Get " company_name"}} is-invalid {{end}}"
+              id="company_name" name="company_name" autocomplete="off" type="text" value="{{$res.CompanyName}}"
+              required>
+            <label class="form-label" for="company_name">会社名</label>
+            {{with .Form.Errors.Get "company_name"}}
+            <label class="text-danger">{{.}}</label>
+            {{end}}
+          </div>
+
+
+          <div class="row">
+            <div class="col-6">
+              <div class="form-outline mb-4">
+                <input class="form-control form-control-lg {{with .Form.Errors.Get " representative_family_name"}}
+                  is-invalid {{end}}" id="representative_family_name" name="representative_family_name"
+                  autocomplete="off" type="text" value="{{$res.RepresentativeFamilyName}}" required>
+                <label class="form-label" for="representative_family_name">代表者姓</label>
+                {{with .Form.Errors.Get "representative_family_name"}}
+                <label class="text-danger">{{.}}</label>
+                {{end}}
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="form-outline mb-4">
+                <input class="form-control form-control-lg {{with .Form.Errors.Get " representative_first_name"}}
+                  is-invalid {{end}}" id="representative_first_name" name="representative_first_name" autocomplete="off"
+                  type="text" value="{{$res.RepresentativeFirstName}}" required>
+                <label class="form-label" for="representative_first_name">代表者名</label>
+                {{with .Form.Errors.Get "representative_first_name"}}
+                <label class="text-danger">{{.}}</label>
+                {{end}}
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-6">
+              <div class="form-outline mb-4">
+                <input class="form-control form-control-lg {{with .Form.Errors.Get " representative_family_name_kana"}}
+                  is-invalid {{end}}" id="representative_family_name_kana" name="representative_family_name_kana"
+                  autocomplete="off" type="text" value="{{$res.RepresentativeFamilyNameKana}}" required>
+                <label class="form-label" for="representative_family_name_kana">代表者姓カナ</label>
+                {{with .Form.Errors.Get "representative_family_name_kana"}}
+                <label class="text-danger">{{.}}</label>
+                {{end}}
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="form-outline mb-4">
+                <input class="form-control form-control-lg {{with .Form.Errors.Get " representative_first_name_kana"}}
+                  is-invalid {{end}}" id="representative_first_name_kana" name="representative_first_name_kana"
+                  autocomplete="off" type="text" value="{{$res.RepresentativeFirstNameKana}}" required>
+                <label class="form-label" for="representative_first_name_kana">代表者名カナ</label>
+                {{with .Form.Errors.Get "representative_first_name_kana"}}
+                <label class="text-danger">{{.}}</label>
+                {{end}}
+              </div>
+            </div>
+          </div>
+
+          <div class="h5 pb-2text-start">Address
+          </div>
+
+          <div class="row align-items-center">
+            <div class="input-group">
+
+              <form class="form-outline mb-4">
+                <input class="form-control {{with .Form.Errors.Get " zipcode"}} is-invalid {{end}}" id="zipcode"
+                  name="zipcode" autocomplete="off" type='search' value="{{$res.Zipcode}}" required>
+                <label class="form-label" for="zipcode">郵便番号</label>
+                {{with .Form.Errors.Get "zipcode"}}
+                <label class="text-danger">{{.}}</label>
+                {{end}}
+              </form>
+
+              <div>
+                <!-- <button type="submit" class="btn btn-lg text-white" style="background-color:#4f49f0">検索</button> -->
+                <button type="button" id="search" class="btn btn-lg text-white"
+                  style="background-color:#4f49f0">検索</button>
+              </div>
+
+            </div>
+          </div>
+
+          <select required class="form-label form-select mb-4  {{with .Form.Errors.Get " prefecture"}} is-invalid
+            {{end}}" id="prefecture" name="prefecture" autocomplete="off">
+            <option value="0">都道府県</option>
+            {{range $i, $v := $prefectures}}
+            <option value="{{$v.Id}}" {{ if eq $v.Id $res.PrefectureId }} selected {{ end }}>{{$v.Name}}</option>
+            {{end}}
+            {{with .Form.Errors.Get "prefecture"}}
+            <label class="text-danger">{{.}}</label>
+            {{end}}
+          </select>
+
+
+          <div class="form-outline mb-4">
+            <input class="form-control form-control-lg {{with .Form.Errors.Get " city"}} is-invalid {{end}}" id="city"
+              name="city" autocomplete="off" type="text" value="{{$res.City}}" required>
+            <label class="form-label" for="city">市区町村</label>
+            {{with .Form.Errors.Get "city"}}
+            <label class="text-danger">{{.}}</label>
+            {{end}}
+          </div>
+
+          <div class="form-outline mb-4">
+            <input class="form-control form-control-lg {{with .Form.Errors.Get " street"}} is-invalid {{end}}"
+              id="street" name="street" autocomplete="off" type="text" value="{{$res.Street}}" required>
+            <label class="form-label" for="street">番地</label>
+            {{with .Form.Errors.Get "street"}}
+            <label class="text-danger">{{.}}</label>
+            {{end}}
+          </div>
+
+          <div class="form-outline mb-4">
+            <input class="form-control form-control-lg {{with .Form.Errors.Get " building"}} is-invalid {{end}}"
+              id="building" name="building" autocomplete="off" type="text" value="{{$res.Building}}">
+            <label class="form-label" for="building">建物名</label>
+            {{with .Form.Errors.Get "building"}}
+            <label class="text-danger">{{.}}</label>
+            {{end}}
+          </div>
+
+          <div class="h5 pb-2 text-start">Company Contact Information
+          </div>
+
+          <div class="form-outline mb-4">
+            <input class="form-control form-control-lg {{with .Form.Errors.Get " tel"}} is-invalid {{end}}" id="tel"
+              name="tel" autocomplete="off" type="text" value="{{$res.Tel}}" required>
+            <label class="form-label" for="tel">電話番号</label>
+            {{with .Form.Errors.Get "tel"}}
+            <label class="text-danger">{{.}}</label>
+            {{end}}
+          </div>
+
+          <div class="form-outline mb-4">
+            <input class="form-control form-control-lg {{with .Form.Errors.Get " mail"}} is-invalid {{end}}" id="mail"
+              name="mail" autocomplete="off" type='email' value="{{$res.Mail}}" required>
+            <label class="form-label" for="mail">メールアドレス</label>
+            {{with .Form.Errors.Get "mail"}}
+            <label class="text-danger">{{.}}</label>
+            {{end}}
+          </div>
+
+        </div>
+
+        <div class="row justify-content-end pb-3 pe-3">
+
+          <div class="col-2">
+            <a href="/signup" type="button" class="btn btn-block btn-light">戻る</a>
+          </div>
+
+          <div class="col-2">
+            <input type="submit" class="btn btn-block text-white" style="background-color:#4f49f0" value="次へ">
+            <!-- <a href="../Sign in - Sign up/Company-registration-contd.html" type="submit"
+                class="btn btn-block text-white" style="background-color:#4f49f0">次へ</a> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">住所選択</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <table class="table">
+          <!-- <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+            </tr>
+          </thead> -->
+          <tbody id="tbody">
+            <!-- <tr>
+              <th scope="row">1</th>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr> -->
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

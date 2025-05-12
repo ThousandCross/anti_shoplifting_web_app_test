@@ -1,0 +1,35 @@
+{{template "base" .}}
+
+{{define "content"}}
+<div class="container">
+        
+    <div class="row row-cols-1 row-cols-md-2 align-items-center justify-content-evenly vh-100">
+    
+        <div class="col-7 col-md-4 col-lg-3">
+            <div class="card text-center">
+                <div class="card-img-top">
+                    <img class="mt-5 w-25"src="/static/img/company gray.png">
+                </div>
+                <div class="card-body mt-1">
+                <a  href="/signup/company" class="btn btn-lg btn-block text-white stretched-link" style="background-color:#4f49f0">
+                    <span class="fw-bold text-capitalize">New Company</span>
+                </a>   
+                </div> 
+            </div>
+        </div>
+
+        <div class="col-7 col-md-4 col-lg-3">
+            <div class="card text-center">
+                <div class="card-img-top">
+                    <img class="mt-5 w-25"src="/static/img/store gray.png">
+                </div>
+                <div class="card-body mt-1">
+                <a href="/signup/store" class="btn btn-lg btn-block text-white stretched-link" style="background-color:#4f49f0">
+                    <span class="fw-bold text-capitalize">New Store</span>
+                </a>   
+                </div> 
+            </div>
+        </div>       
+    </div>  
+</div>
+{{end}}
